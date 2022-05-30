@@ -1,3 +1,6 @@
+import controllers.CountryController;
+import models.CountryFilter;
+import models.HttpTrustedServiceApi;
 import views.CountryView;
 import views.ProviderView;
 import views.StatusView;
@@ -5,24 +8,31 @@ import views.TypeView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class App extends JFrame {
     private JPanel filtersPanel;
     private JPanel servicesPanel;
-    private CountryView countryView;
-    private ProviderView providerView;
-    private StatusView statusView;
-    private TypeView typeView;
     public App(){
         setTitle("Trusted Services");
         setSize(1000, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         FlowLayout layout = new FlowLayout();
-        countryView = new CountryView();
-        providerView = new ProviderView();
-        statusView = new StatusView();
-        typeView = new TypeView();
+
+        //Inizializzo le views
+        CountryView countryView = new CountryView();
+        ProviderView providerView = new ProviderView();
+        StatusView statusView = new StatusView();
+        TypeView typeView = new TypeView();
+
+        //Inizializzo l'oggetto HttpTrustedServiceApi che verrà poi passato a tutti i filters tramite i relativi controllers
+        HttpTrustedServiceApi service = new HttpTrustedServiceApi();
+        //Inizializzo i filters passando il servizio
+        CountryFilter countryFilter = new CountryFilter(service);
+        //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
+        CountryController countryController = new CountryController(countryView, countryFilter);
+
         filtersPanel = new JPanel();
         filtersPanel.add(countryView);
         filtersPanel.add(providerView);
